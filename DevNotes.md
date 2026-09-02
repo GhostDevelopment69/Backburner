@@ -21,7 +21,7 @@ installs, etc.) without touching core logic.
  
 ## Non-negotiable design principles
  
-These aren't style preferences — they're the actual trust and safety
+These aren't style preferences. They're the actual trust and safety
 contract of the project. Any PR that violates these gets rejected
 regardless of how good the feature is:
  
@@ -30,14 +30,14 @@ regardless of how good the feature is:
    auto-start on boot, no background daemon, no scheduled activation
    unless a future feature makes that strictly opt-in and visibly
    configured.
-2. **No network calls, no telemetry.** Zero phone-home behavior, period.
+2. **No network calls, no telemetry.** Zero phone-home behaviour, period.
 3. **Always restorable.** Every suspend action must have a corresponding,
    tested restore path. If you add a new type of system state that gets
    modified (services, startup entries, process priority, whatever comes
    next), it is not mergeable until snapshot + restore both exist and are
    verified.
 4. **Crash-safe.** The app must recover system state even if it's killed
-   uncleanly mid-session — not just on a graceful exit.
+   uncleanly mid-session not just on a graceful exit.
 5. **Least privilege, and documented.** If a change requires touching a
    new Windows API or elevation scope, explain why in the PR description.
 ## Current architecture
@@ -102,8 +102,11 @@ disposable VM.
 3. Clone the repo, check out the `development` branch — this is where
    active work happens, not `main` or `testing`
 4. From `/src`, run `dotnet build` to confirm the toolchain works
-5. Run the app **as Administrator** — service start/stop requires
-   elevation, you'll get access-denied exceptions otherwise
+5. **Launch VS Code itself as Administrator** before running the app —
+   you can't elevate just the integrated terminal after VS Code is
+   already open. Close VS Code, right-click its shortcut/icon, choose
+   "Run as administrator." Any terminal you open inside that session
+   inherits admin rights, which service start/stop requires.
 6. To manually test: Activate should stop the test service (Print
    Spooler by default), Deactivate should restore it. Confirm via
    `sc query spooler` or the Services app.
@@ -111,7 +114,7 @@ disposable VM.
  
 Don't skip this if you touch anything in `ServiceSnapshot.cs`:
  
-1. Run as Administrator, click Activate
+1. Launch VS Code as Administrator (see step 5 above), click Activate
 2. Confirm `snapshot.json` exists and the test service is stopped
 3. Force-kill the app via Task Manager (not the tray Exit option — that's
    a clean shutdown and doesn't test this path)
