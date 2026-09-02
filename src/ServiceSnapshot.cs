@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.ServiceProcess;
 using System.Text.Json;
+using System.Management;
 
 namespace Backburner
 {
@@ -56,8 +57,21 @@ namespace Backburner
 
         private static string GetStartMode(string serviceName)
         {
-            // Requires querying the registry or WMI — ServiceController alone doesn't expose start type.
-            // Placeholder for now; we'll wire this up with System.Management next.
+            try
+            {
+                using var searcher = new ManagementObjectSearcher(
+                    $"SELECT StartMode FROM Win32_Service WHERE Name = '{serviceName}'");
+
+                foreach (ManagementObject service in searcher.Get())
+                {
+                    return service["StartMode"]?.ToString() ?? "Unknown";
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Could not get start mode for {serviceName}: {ex.Message}");
+            }
+
             return "Unknown";
         }
     }
