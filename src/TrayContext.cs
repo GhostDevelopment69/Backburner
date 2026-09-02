@@ -39,6 +39,9 @@ namespace Backburner
 
             // suppression/restore logic hooks in here next
             _trayIcon.Text = _isActive ? "Backburner (Active)" : "Backburner";
+
+            var testServices = new List<string> { "Spooler" }; // safe, harmless test service
+            var snapshot = ServiceSnapshot.Capture(testServices);
         }
 
         private void OnExitClicked(object? sender, EventArgs e)
