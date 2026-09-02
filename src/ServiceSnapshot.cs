@@ -74,5 +74,47 @@ namespace Backburner
 
             return "Unknown";
         }
+        public static void Suspend(List<string> serviceNames)
+        {
+            foreach (var name in serviceNames)
+            {
+                try
+                {
+                    using var sc = new ServiceController(name);
+
+                    if (sc.Status == ServiceControllerStatus.Running &&
+                        sc.CanStop)
+                    {
+                        sc.Stop();
+                        sc.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(10));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Could not stop {name}: {ex.Message}");
+                }
+            }
+        }
+        public static void Restore(List<ServiceState> snapshot)
+        {
+            foreach (var state in snapshot)
+            {
+                try
+                {
+                    using var sc = new ServiceController(state.ServiceName);
+
+                    if (state.OriginalStatus == "Running" &&
+                        sc.Status != ServiceControllerStatus.Running)
+                    {
+                        sc.Start();
+                        sc.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(10));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Could not restore {state.ServiceName}: {ex.Message}");
+                }
+            }
+        }
     }
 }

@@ -32,16 +32,25 @@ namespace Backburner
 
         private readonly ToolStripMenuItem _activateItem;
 
+        private List<ServiceState>? _lastSnapshot;
+
         private void OnActivateClicked(object? sender, EventArgs e)
         {
             _isActive = !_isActive;
             _activateItem.Text = _isActive ? "Deactivate" : "Activate";
-
-            // suppression/restore logic hooks in here next
             _trayIcon.Text = _isActive ? "Backburner (Active)" : "Backburner";
 
-            var testServices = new List<string> { "Spooler" }; // safe, harmless test service
-            var snapshot = ServiceSnapshot.Capture(testServices);
+            var testServices = new List<string> { "Spooler" };
+            
+            if (_isActive)
+            {
+                _lastSnapshot = ServiceSnapshot.Capture(testServices);
+                ServiceSnapshot.Suspend(testServices);
+            }
+            else if (_lastSnapshot != null)
+            {
+              ServiceSnapshot.Restore(_lastSnapshot);  
+            }
         }
 
         private void OnExitClicked(object? sender, EventArgs e)
