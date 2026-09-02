@@ -3,7 +3,7 @@
 **Put your background apps on the backburner.**
  
 Backburner is a free, open-source Windows utility that suspends background
-resource drain — services, startup apps, idle bloat — while you're actively
+resource drain (services, startup apps, idle bloat) while you're actively
 gaming, and restores everything the instant you're done. No controller-only
 mode. No console shell. No forced app switch. Just your desktop, minus the
 noise fighting your foreground app for CPU and RAM.
@@ -13,7 +13,7 @@ noise fighting your foreground app for CPU and RAM.
 ## Why
  
 Windows 11's Xbox Full Screen Experience gets a real performance boost when
-active — but it locks you into a controller-driven, handheld-style interface
+active but it locks you into a controller-driven, handheld-style interface
 to get it. There's no reason the performance gain and the interface should
 be bundled together. Backburner unbundles them: same idea, none of the
 lock-in.
@@ -23,7 +23,7 @@ lock-in.
 - Snapshots the current state of running services, startup apps, and
   background processes
 - Suspends or defers a configurable list of background bloat on your command
-- Restores everything to its original state when you're done — automatically,
+- Restores everything to its original state when you're done automatically,
   even on a crash or unclean shutdown
 - Runs nothing in the background unless you tell it to. No service, no
   scheduled task, no auto-start, no telemetry, no network calls, ever
@@ -71,13 +71,13 @@ doesn't match that, open an issue.
  
 - Windows 11
 - .NET runtime (see releases for the current target version)
-- Administrator privileges (required to manage services — Backburner only
+- Administrator privileges (required to manage services. Backburner only
   ever touches what's listed in your active profile)
 ## Contributing
  
 Pull requests, new profiles, and issue reports are all welcome. If you're
-adding a profile for a different use case — creative apps, unsupported
-hardware, anything else — it belongs in `/profiles`, not baked into core.
+adding a profile for a different use case (creative apps, unsupported
+hardware, anything else) it belongs in `/profiles`, not baked into core.
  
 ## License
  
