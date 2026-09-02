@@ -54,6 +54,12 @@ namespace Backburner
             var json = File.ReadAllText(SnapshotPath);
             return JsonSerializer.Deserialize<List<ServiceState>>(json);
         }
+        // For Crash Watchdog listed in Program.cs
+        public static void ClearSnapshot()
+        {
+            if (File.Exists(SnapshotPath))
+                File.Delete(SnapshotPath);
+        }
 
         private static string GetStartMode(string serviceName)
         {
@@ -73,6 +79,39 @@ namespace Backburner
             }
 
             return "Unknown";
+        }
+        public static void RestoreStartMode(List<ServiceState> snapshot)
+        {
+            foreach (var state in snapshot)
+            {
+                if (state.OriginalStartMode == "Unknown") continue;
+
+                try
+                {
+                    using var searcher = new ManagementObjectSearcher(
+                        $"SELECT * FROM Win32_Service WHERE Name = '{state.ServiceName}'");
+
+                    foreach (ManagementObject service in searcher.Get())
+                    {
+                        var wmiStartMode = state.OriginalStartMode switch
+                        {
+                            "Auto" => "Automatic",
+                            "Manual" => "Manual",
+                            "Disabled" => "Disabled",
+                            _ => null
+                        };
+
+                        if (wmiStartMode != null)
+                        {
+                            service.InvokeMethod("ChangeStartMode", new object[] { wmiStartMode });
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Could not restore start mode for {state.ServiceName}: {ex.Message}");
+                }
+            }
         }
         public static void Suspend(List<string> serviceNames)
         {

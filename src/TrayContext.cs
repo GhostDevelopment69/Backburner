@@ -49,7 +49,9 @@ namespace Backburner
             }
             else if (_lastSnapshot != null)
             {
-              ServiceSnapshot.Restore(_lastSnapshot);  
+              ServiceSnapshot.Restore(_lastSnapshot);
+              ServiceSnapshot.RestoreStartMode(_lastSnapshot);
+              ServiceSnapshot.ClearSnapshot();
             }
         }
 
