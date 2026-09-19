@@ -46,12 +46,14 @@ namespace Backburner
             {
                 _lastSnapshot = ServiceSnapshot.Capture(testServices);
                 ServiceSnapshot.Suspend(testServices);
+                RestoreFallback.RegisterTask();
             }
             else if (_lastSnapshot != null)
             {
               ServiceSnapshot.Restore(_lastSnapshot);
               ServiceSnapshot.RestoreStartMode(_lastSnapshot);
               ServiceSnapshot.ClearSnapshot();
+              RestoreFallback.RemoveTask();
             }
         }
 
